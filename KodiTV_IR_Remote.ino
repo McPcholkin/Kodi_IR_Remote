@@ -6,10 +6,21 @@ int testLedPin = 10;   // Led for testing
 int buttonPin = 12;    // button for testing
 int irRecivePin = 11;  // ir reciever 
 int irLedPin = 3;      // ir led for control TV
-boolean buttonState = 0; 
-boolean tvPowerState = 0; //control power state of TV
-boolean sleepTimerState = 0;  // Default Sleep Timer is off
 
+boolean buttonState = 0; 
+
+boolean tvPowerState = 0;       // Flip Bit default state
+
+boolean sleepTimerState = 0;    // Flip Bit default state
+int sleepTimerPositionSet = 8;  // off - 15 - 30 - 45 - 60 - 90 - 120 - 180 - 240
+
+boolean menuState = 0;    // Flip Bit default state
+
+boolean okState = 0;      // Flip Bit default state
+
+boolean upState = 0;      // Flip Bit default state
+
+boolean downState = 0;    // Flip Bit default state
 
 
 IRrecv irrecv(irRecivePin); // set reciever to pin
@@ -87,14 +98,14 @@ void loop() {
           {
             irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();          // Enable IR Reciving
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 1;             // Chandge flip bit state
           }
         else 
           {
             irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();          // Enable IR Reciving
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 0;             // Chandge flip bit state
           }
          digitalWrite(testLedPin, HIGH);
@@ -124,20 +135,23 @@ void loop() {
       if (results.value == 0xFF30CF) // 4 - sleep timer
           {
          Serial.println("TIMER");         // Debug
+         for (int i=0; i<sleepTimerPositionSet; i++)
+         {
          if(sleepTimerState == 0)         // Check flip bit state
           {
             irsend.send(RC5, 0x82B, 13);  // Sleep Timer Signal
             delay(300);
-            irrecv.enableIRIn();          // Enable IR Reciving
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             sleepTimerState = 1;          // Chandge flip bit state
           }
         else 
           {
             irsend.send(RC5, 0x2B, 13);   // Sleep Timer Signal
             delay(300);
-            irrecv.enableIRIn();          // Enable IR Reciving
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             sleepTimerState = 0;          // Chandge flip bit state
           }
+         }
          digitalWrite(testLedPin, HIGH);
          delay(100);
          digitalWrite(testLedPin, LOW);
@@ -162,9 +176,11 @@ void loop() {
         }
 
 
-      if (results.value == 0xFF10EF) // 7
+      if (results.value == 0xFF10EF) // 7 - Brightness UP
         {
-         Serial.println("7");
+         Serial.println("Brightness UP");
+
+         
          digitalWrite(testLedPin, HIGH);
          delay(100);
          digitalWrite(testLedPin, LOW);;
@@ -198,7 +214,7 @@ void loop() {
         }
 
 
-      if (results.value == 0xFF42BD) // *
+      if (results.value == 0xFF42BD) // * - Brighness Down
         {
          Serial.println("*");
          digitalWrite(testLedPin, HIGH);
