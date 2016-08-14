@@ -8,6 +8,19 @@ boolean buttonStatus = 0;
 boolean tvPowerState = 0; //control power state of TV
 int sleepTimerState = 0;  // Default Sleep Timer is off
 
+
+unsigned int  rawTimer0[19] = {1750,1750, 1750,850, 900,900, 850,900, 850,900, 850,1750, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 1C102884
+unsigned int  rawTimer1[21] = {1750,850, 900,850, 900,850, 900,900, 900,850, 850,900, 850,1750, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 4B995E59
+unsigned int  rawTimer2[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
+unsigned int  rawTimer3[21] = {1750,900, 850,900, 850,900, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 4B995E59
+unsigned int  rawTimer4[19] = {1750,1750, 1750,900, 850,900, 900,850, 900,850, 900,1700, 1800,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
+unsigned int  rawTimer5[21] = {1800,850, 900,850, 900,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1800,1700, 900,850, 900};  // UNKNOWN 4B995E59
+unsigned int  rawTimer6[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
+unsigned int  rawTimer7[21] = {1750,850, 900,850, 900,900, 850,900, 850,900, 850,900, 900,1700, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 4B995E59
+unsigned int  rawTimer8[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
+unsigned int  rawTimer9[21] = {1750,850, 900,900, 850,900, 850,900, 900,850, 900,850, 900,1700, 1800,1750, 1750,1750, 900,850, 900};  // UNKNOWN 4B995E59
+
+
 IRrecv irrecv(irRecivePin); // set reciever to pin
 IRsend irsend;
 
@@ -203,21 +216,64 @@ void loop() {
       buttonStatus = digitalRead(buttonPin); // Physical button to set sleep timer
       if(buttonStatus == HIGH)
         {
-         Serial.println("POWER");     // Debug
+         Serial.println("TIMER");     // Debug
          if(tvPowerState == 0)        // check if TV OFF
           {
-            irsend.sendRC5(0x80C, 12);  // ON Signal
+            irsend.sendRC5(0x812, 13);  // ON Signal
             delay(300);
             irrecv.enableIRIn();        // Enable IR Reciving
             tvPowerState = 1;           // Chandge TV status to ON
           }
-          else 
+        else 
           {
-            irsend.sendRC5(0XC, 12);    // OFF Signal
+            irsend.sendRC5(0x12, 13);    // OFF Signal
             delay(300);
             irrecv.enableIRIn();        // Enable IR Reciving
             tvPowerState = 0;           // Chandge TV status to OFF
           }
+/*
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+
+                  if(sleepTimerState == 1)
+         {
+          irsend.sendRaw(rawTimer1, 21, 38);
+          sleepTimerState = 2;
+          delay(100);
+         }
+     */    
          digitalWrite(testLedPin, HIGH);
          delay(100);
          digitalWrite(testLedPin, LOW);
