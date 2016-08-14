@@ -1,35 +1,27 @@
-#include <IRremote.h> // include IR libary
+#include <IRLib.h>     // include IR libary
+
+#define USE_DUMP      // disable not used 
 
 int testLedPin = 10;   // Led for testing
 int buttonPin = 12;    // button for testing
 int irRecivePin = 11;  // ir reciever 
 int irLedPin = 3;      // ir led for control TV
-boolean buttonStatus = 0; 
+boolean buttonState = 0; 
 boolean tvPowerState = 0; //control power state of TV
-int sleepTimerState = 0;  // Default Sleep Timer is off
+boolean sleepTimerState = 0;  // Default Sleep Timer is off
 
-
-unsigned int  rawTimer0[19] = {1750,1750, 1750,850, 900,900, 850,900, 850,900, 850,1750, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 1C102884
-unsigned int  rawTimer1[21] = {1750,850, 900,850, 900,850, 900,900, 900,850, 850,900, 850,1750, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 4B995E59
-unsigned int  rawTimer2[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
-unsigned int  rawTimer3[21] = {1750,900, 850,900, 850,900, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 4B995E59
-unsigned int  rawTimer4[19] = {1750,1750, 1750,900, 850,900, 900,850, 900,850, 900,1700, 1800,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
-unsigned int  rawTimer5[21] = {1800,850, 900,850, 900,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1800,1700, 900,850, 900};  // UNKNOWN 4B995E59
-unsigned int  rawTimer6[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
-unsigned int  rawTimer7[21] = {1750,850, 900,850, 900,900, 850,900, 850,900, 850,900, 900,1700, 1800,1700, 1800,1750, 850,900, 850};  // UNKNOWN 4B995E59
-unsigned int  rawTimer8[19] = {1750,1750, 1800,850, 900,850, 900,850, 900,850, 900,1750, 1750,1750, 1750,1750, 900,850, 900};  // UNKNOWN 1C102884
-unsigned int  rawTimer9[21] = {1750,850, 900,900, 850,900, 850,900, 900,850, 900,850, 900,1700, 1800,1750, 1750,1750, 900,850, 900};  // UNKNOWN 4B995E59
 
 
 IRrecv irrecv(irRecivePin); // set reciever to pin
 IRsend irsend;
 
-decode_results results;     // decode recieved resolts
-
+IRdecode results;     // decode recieved resolts
+unsigned int Buffer[RAWBUF];
 
 void setup() {
   Serial.begin(9600);       // print output for debug
   irrecv.enableIRIn();      // Start the receiver
+  results.UseExtnBuf(Buffer);
   pinMode(testLedPin, OUTPUT);
   pinMode(buttonPin, INPUT);
   
@@ -38,9 +30,10 @@ void setup() {
 void loop() {
 
 //------------------------------------------------------------------------------------
-  if(irrecv.decode(&results)) //this checks to see if a code has been received
+  if(irrecv.GetResults(&results)) //this checks to see if a code has been received
   {
-     
+      results.decode(); // start decode (if not decode value == 0)
+
       if (results.value == 0xFF629D) // Up - Up Kodi
         {
          Serial.println("Up");
@@ -89,20 +82,20 @@ void loop() {
 
       if (results.value == 0xFF6897)  // 1 - Power switch
         {
-         Serial.println("POWER");     // Debug
-         if(tvPowerState == 0)        // check if TV OFF
+         Serial.println("POWER");         // Debug
+         if(tvPowerState == 0)            // Check flip bit state
           {
-            irsend.sendRC5(0x80C, 12);  // ON Signal
+            irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 1;           // Chandge TV status to ON
+            irrecv.enableIRIn();          // Enable IR Reciving
+            tvPowerState = 1;             // Chandge flip bit state
           }
         else 
           {
-            irsend.sendRC5(0XC, 12);    // OFF Signal
+            irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 0;           // Chandge TV status to OFF
+            irrecv.enableIRIn();          // Enable IR Reciving
+            tvPowerState = 0;             // Chandge flip bit state
           }
          digitalWrite(testLedPin, HIGH);
          delay(100);
@@ -129,8 +122,22 @@ void loop() {
 
 
       if (results.value == 0xFF30CF) // 4 - sleep timer
-        {
-         Serial.println("4");
+          {
+         Serial.println("TIMER");         // Debug
+         if(sleepTimerState == 0)         // Check flip bit state
+          {
+            irsend.send(RC5, 0x82B, 13);  // Sleep Timer Signal
+            delay(300);
+            irrecv.enableIRIn();          // Enable IR Reciving
+            sleepTimerState = 1;          // Chandge flip bit state
+          }
+        else 
+          {
+            irsend.send(RC5, 0x2B, 13);   // Sleep Timer Signal
+            delay(300);
+            irrecv.enableIRIn();          // Enable IR Reciving
+            sleepTimerState = 0;          // Chandge flip bit state
+          }
          digitalWrite(testLedPin, HIGH);
          delay(100);
          digitalWrite(testLedPin, LOW);
@@ -209,24 +216,25 @@ void loop() {
         }
         
   irrecv.resume(); //receive the next value  
+  results.decode(); //Restart the receiver so it can be capturing another 
   }
 //------------------------------------------------------------------------------
 
 
-      buttonStatus = digitalRead(buttonPin); // Physical button to set sleep timer
-      if(buttonStatus == HIGH)
+      buttonState = digitalRead(buttonPin); // Physical button to set sleep timer
+      if(buttonState == HIGH)
         {
          Serial.println("TIMER");     // Debug
          if(tvPowerState == 0)        // check if TV OFF
           {
-            irsend.sendRC5(0x812, 13);  // ON Signal
+            irsend.send(RC5, 0x82B, 13);  // ON Signal
             delay(300);
             irrecv.enableIRIn();        // Enable IR Reciving
             tvPowerState = 1;           // Chandge TV status to ON
           }
         else 
           {
-            irsend.sendRC5(0x12, 13);    // OFF Signal
+            irsend.send(RC5, 0x2B, 13);    // OFF Signal
             delay(300);
             irrecv.enableIRIn();        // Enable IR Reciving
             tvPowerState = 0;           // Chandge TV status to OFF
