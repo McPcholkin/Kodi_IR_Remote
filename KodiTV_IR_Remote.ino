@@ -132,10 +132,10 @@ void loop() {
         }
 
 
-      if (results.value == 0xFF30CF) // 4 - sleep timer
+      if (results.value == 0xFF30CF) // 4 - Sleep Timer
           {
          Serial.println("TIMER");         // Debug
-         for (int i=0; i<sleepTimerPositionSet; i++)
+         for (int i=0; i<sleepTimerPositionSet; i++)  // Push button 8 times
          {
          if(sleepTimerState == 0)         // Check flip bit state
           {
@@ -178,8 +178,85 @@ void loop() {
 
       if (results.value == 0xFF10EF) // 7 - Brightness UP
         {
-         Serial.println("Brightness UP");
+          Serial.println("Brightness UP"); // Debug
 
+          // Enter Menu ---------------------------------------------------------------------------
+          if(menuState == 0)               // Check flip bit state
+            {
+              irsend.send(RC5, 0x812, 13);  // Menu Signal
+              delay(50);
+              irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+              menuState = 1;                // Chandge flip bit state
+            }
+          else 
+            {
+              irsend.send(RC5, 0x12, 13);   // Menu Signal
+              delay(50);
+              irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+              menuState = 0;                // Chandge flip bit state
+            }
+          //---------------------------------------------------------------------------------------
+
+          // Press OK button 2 times --------------------------------------------------------------
+          for (int i=0; i<2; i++)
+            {
+              if(okState == 0)                  // Check flip bit state
+                {
+                  irsend.send(RC5, 0x817, 13);  // OK Signal
+                  delay(50);
+                  irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+                  okState = 1;                  // Chandge flip bit state
+                }
+              else 
+                {
+                  irsend.send(RC5, 0x17, 13);   // OK Signal
+                  delay(50);
+                  irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+                  okState = 0;                  // Chandge flip bit state
+                }
+              delay(100);                       // Not so fast
+            }
+          //----------------------------------------------------------------------------------------
+
+          // Press UP button 10 times --------------------------------------------------------------
+          for (int i=0; i<10; i++)
+            {
+              if(upState == 0)                  // Check flip bit state
+                {
+                  irsend.send(RC5, 0x810, 13);  // UP Signal
+                  delay(50);
+                  irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+                  upState = 1;                  // Chandge flip bit state
+                }
+              else 
+                {
+                  irsend.send(RC5, 0x10, 13);   // UP Signal
+                  delay(50);
+                  irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+                  upState = 0;                  // Chandge flip bit state
+                }
+            }
+          //----------------------------------------------------------------------------------------
+
+
+
+
+         // Close Menu  -----------------------------------------------------------------------------
+          if(menuState == 0)               // Check flip bit state
+            {
+              irsend.send(RC5, 0x812, 13);  // Menu Signal
+              delay(50);
+              irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+              menuState = 1;                // Chandge flip bit state
+            }
+          else 
+            {
+              irsend.send(RC5, 0x12, 13);   // Menu Signal
+              delay(50);
+              irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+              menuState = 0;                // Chandge flip bit state
+            }
+         //-------------------------------------------------------------------------------------------
          
          digitalWrite(testLedPin, HIGH);
          delay(100);
