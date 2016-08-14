@@ -2,8 +2,12 @@
 
 #define USE_DUMP      // disable not used 
 
-int testLedPin = 10;   // Led for testing
-int buttonPin = 12;    // button for testing
+int signalLedPin = 10;   // Led for testing
+int buttonPin = 8;    // button for testing
+int avSvichButton = 12; // physical buton to Svich AV
+boolean avSvichButtonState = 0; // Button state
+int speekerPin = 9;      // Speeker
+
 int irRecivePin = 11;  // ir reciever 
 int irLedPin = 3;      // ir led for control TV
 
@@ -22,6 +26,8 @@ boolean upState = 0;      // Flip Bit default state
 
 boolean downState = 0;    // Flip Bit default state
 
+boolean avState = 0;    // Flip Bit default state
+
 
 IRrecv irrecv(irRecivePin); // set reciever to pin
 IRsend irsend;
@@ -33,9 +39,9 @@ void setup() {
   Serial.begin(9600);       // print output for debug
   irrecv.enableIRIn();      // Start the receiver
   results.UseExtnBuf(Buffer);
-  pinMode(testLedPin, OUTPUT);
+  pinMode(signalLedPin, OUTPUT);
   pinMode(buttonPin, INPUT);
-  
+  pinMode(speekerPin, INPUT);
 }
 
 void loop() {
@@ -48,36 +54,36 @@ void loop() {
       if (results.value == 0xFF629D) // Up - Up Kodi
         {
          Serial.println("Up");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFFA857) // Down - Down Kodi
         {
          Serial.println("Down");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
 
         }
 
       if (results.value == 0xFF22DD) // Left - Left Kodi
         {
          Serial.println("Left");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFFC23D) // Right - Right Kodi
         {
          Serial.println("Right");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
@@ -85,9 +91,9 @@ void loop() {
       if (results.value == 0xFF02FD) // OK - OK Kodi
         {
          Serial.println("OK");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);;
+         digitalWrite(signalLedPin, LOW);;
         }
 
 
@@ -100,6 +106,17 @@ void loop() {
             delay(300);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 1;             // Chandge flip bit state
+            
+            // On Sound ------------------
+            delay(105);
+            analogWrite(speekerPin, 32);
+            delay(105);
+            analogWrite(speekerPin, 0);
+            delay(125);
+            analogWrite(speekerPin, 38);
+            delay(105);
+            analogWrite(speekerPin, 0);
+            //-----------------------------
           }
         else 
           {
@@ -107,28 +124,40 @@ void loop() {
             delay(300);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 0;             // Chandge flip bit state
+
+            // On Sound ------------------
+            delay(105);
+            analogWrite(speekerPin, 38);
+            delay(105);
+            analogWrite(speekerPin, 0);
+            delay(125);
+            analogWrite(speekerPin, 32);
+            delay(105);
+            analogWrite(speekerPin, 0);
+            //-----------------------------
+            
           }
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF9867) // 2 - back Kodi
         {
          Serial.println("2");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
       
       if (results.value == 0xFFB04F) // 3 - Vol UP Kodi
         {
          Serial.println("3");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
@@ -152,27 +181,27 @@ void loop() {
             sleepTimerState = 0;          // Chandge flip bit state
           }
          }
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF18E7) // 5
         {
          Serial.println("5");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF7A85) // 6 - Vol Down Kodi
         {
          Serial.println("6");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
@@ -255,36 +284,36 @@ void loop() {
             }
          //-------------------------------------------------------------------------------------------
          
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);;
+         digitalWrite(signalLedPin, LOW);;
         }
 
 
       if (results.value == 0xFF38C7) // 8
         {
          Serial.println("8");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);;
+         digitalWrite(signalLedPin, LOW);;
         }
 
 
       if (results.value == 0xFF5AA5) // 9
         {
          Serial.println("9");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF4AB5) // 0
         {
          Serial.println("0");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
@@ -367,18 +396,18 @@ void loop() {
             }
          //-------------------------------------------------------------------------------------------
         
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF52AD) // #
         {
          Serial.println("#");
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
         
   irrecv.resume(); //receive the next value  
@@ -387,100 +416,64 @@ void loop() {
 //------------------------------------------------------------------------------
 
 
-      buttonState = digitalRead(buttonPin); // Physical button to set sleep timer
-      if(buttonState == HIGH)
+
+
+      avSvichButtonState = digitalRead(avSvichButton); // Physical button to Chandge AV
+      if(avSvichButtonState == HIGH)
         {
-         Serial.println("TIMER");     // Debug
-         if(tvPowerState == 0)        // check if TV OFF
+         Serial.println("AV");            // Debug
+         if(avState == 0)                 // Check flip bit state
           {
-            irsend.send(RC5, 0x82B, 13);  // ON Signal
-            delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 1;           // Chandge TV status to ON
+            irsend.send(RC5, 0x1838, 13); // AV Signal
+            delay(100);
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+            avState = 1;                  // Chandge flip bit state
+
           }
         else 
           {
-            irsend.send(RC5, 0x2B, 13);    // OFF Signal
-            delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 0;           // Chandge TV status to OFF
+            irsend.send(RC5, 0x1038, 13); // AV Signal
+            delay(100);
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+            avState = 0;                  // Chandge flip bit state
           }
-/*
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-
-                  if(sleepTimerState == 1)
-         {
-          irsend.sendRaw(rawTimer1, 21, 38);
-          sleepTimerState = 2;
-          delay(100);
-         }
-     */    
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
+         
+         analogWrite(speekerPin, 32);       // Beep
+         delay(105);
+         analogWrite(speekerPin, 0);
         }
 
 
+
+//-----------------------------------------------------------------------------
 /* button As Power Switch
-
-      buttonStatus = digitalRead(buttonPin); // Physical button to on TV
-      if(buttonStatus == HIGH)
+      buttonState = digitalRead(buttonPin); // Physical button to on TV
+      if(buttonState == HIGH)
         {
-         Serial.println("POWER");     // Debug
-         if(tvPowerState == 0)        // check if TV OFF
+         Serial.println("POWER");         // Debug
+         if(tvPowerState == 0)            // Check flip bit state
           {
-            irsend.sendRC5(0x80C, 12);  // ON Signal
+            irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 1;           // Chandge TV status to ON
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+            tvPowerState = 1;             // Chandge flip bit state
           }
-          else 
+        else 
           {
-            irsend.sendRC5(0XC, 12);    // OFF Signal
+            irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
             delay(300);
-            irrecv.enableIRIn();        // Enable IR Reciving
-            tvPowerState = 0;           // Chandge TV status to OFF
+            irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
+            tvPowerState = 0;             // Chandge flip bit state
           }
-         digitalWrite(testLedPin, HIGH);
+         digitalWrite(signalLedPin, HIGH);
          delay(100);
-         digitalWrite(testLedPin, LOW);
+         digitalWrite(signalLedPin, LOW);
         }
-
 
 */
-  // put your main code here, to rIRrecv irrecv(RECV_PIN);
+
 
 }
