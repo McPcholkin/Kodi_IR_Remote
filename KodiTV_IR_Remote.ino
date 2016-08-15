@@ -1,46 +1,39 @@
-#include <IRLib.h>     // include IR libary
-
-#define USE_DUMP      // disable not used 
-
-#include <Keyboard.h>  // Pro micro keyboard lib
+#include <IRLib.h>      // include IR libary
+#define USE_DUMP        // disable not used 
+#include <Keyboard.h>   // Pro micro keyboard lib
 
 int signalLedPin = 6;   // Led for testing
-//int buttonPin = 8;    // button for testing
-int avSvichButton = 2; // physical buton to Svich AV
+int avSvichButton = 2;  // physical buton to Svich AV
 boolean avSvichButtonState = 0; // Button state
-int speekerPin = 3;      // Speeker
+int speekerPin = 3;     // Speeker
 
-int irRecivePin = 5;  // ir reciever 
-int irLedPin = 4;      // ir led for control TV
-
-//boolean buttonState = 0; 
+int irRecivePin = 5;    // ir reciever 
+int irLedPin = 4;       // ir led for control TV
 
 boolean tvPowerState = 0;       // Flip Bit default state
 boolean sleepTimerState = 0;    // Flip Bit default state
 int sleepTimerPositionSet = 8;  // off - 15 - 30 - 45 - 60 - 90 - 120 - 180 - 240
-boolean menuState = 0;    // Flip Bit default state
-boolean okState = 0;      // Flip Bit default state
-boolean upState = 0;      // Flip Bit default state
-boolean downState = 0;    // Flip Bit default state
-boolean avState = 0;    // Flip Bit default state
+boolean menuState = 0;          // Flip Bit default state
+boolean okState = 0;            // Flip Bit default state
+boolean upState = 0;            // Flip Bit default state
+boolean downState = 0;          // Flip Bit default state
+boolean avState = 0;            // Flip Bit default state
 
-
-IRrecv irrecv(irRecivePin); // set reciever to pin
+IRrecv irrecv(irRecivePin);     // set reciever to pin
 IRsend irsend;
 
-IRdecode results;     // decode recieved resolts
+IRdecode results;               // decode recieved resolts
 unsigned int Buffer[RAWBUF];
 
 void setup() {
-  //Serial.begin(9600);       // print output for debug
-  irrecv.enableIRIn();      // Start the receiver
+  irrecv.enableIRIn();          // Start the receiver
   results.UseExtnBuf(Buffer);
   pinMode(signalLedPin, OUTPUT);
   pinMode(avSvichButton, INPUT);
   pinMode(speekerPin, OUTPUT);
   
   delay(100);
-  analogWrite(speekerPin, 6);       // Beep at boot
+  analogWrite(speekerPin, 6);   // Beep at boot
   delay(105);
   analogWrite(speekerPin, 0);
   
@@ -55,8 +48,6 @@ void loop() {
 
       if (results.value == 0xFF629D) // Up - Up Kodi
         {
-          Serial.println("Up");        // debug
-
           Keyboard.press(KEY_UP_ARROW); // Up
           delay(100);
           Keyboard.release(KEY_UP_ARROW);
@@ -69,8 +60,6 @@ void loop() {
 
       if (results.value == 0xFFA857) // Down - Down Kodi
         {
-          Serial.println("Down");     // debug
-
           Keyboard.press(KEY_DOWN_ARROW); // Down
           delay(100);
           Keyboard.release(KEY_DOWN_ARROW);
@@ -84,9 +73,7 @@ void loop() {
 
       if (results.value == 0xFF22DD) // Left - Left Kodi
         {
-          Serial.println("Left");   // debug
-
-          
+    
           Keyboard.press(KEY_LEFT_ARROW); // Left
           delay(100);
           Keyboard.release(KEY_LEFT_ARROW);
@@ -100,9 +87,6 @@ void loop() {
 
       if (results.value == 0xFFC23D) // Right - Right Kodi
         {
-          Serial.println("Right");   // debug
-
-
           Keyboard.press(KEY_RIGHT_ARROW);  // Rihgt
           delay(100);
           Keyboard.release(KEY_RIGHT_ARROW);
@@ -116,8 +100,6 @@ void loop() {
 
       if (results.value == 0xFF02FD) // OK - OK Kodi
         {
-          Serial.println("OK");     // Debug
-  
           Keyboard.press(KEY_RETURN);   // Enter
           delay(100);
           Keyboard.release(KEY_RETURN);
@@ -130,7 +112,6 @@ void loop() {
 
       if (results.value == 0xFF6897)  // 1 - Power switch
         {
-         Serial.println("POWER");         // Debug
          if(tvPowerState == 0)            // Check flip bit state
           {
             irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
@@ -176,8 +157,6 @@ void loop() {
 
       if (results.value == 0xFF9867) // 2 - back Kodi
         {
-          Serial.println("2");    // debug
-
           Keyboard.press(KEY_BACKSPACE);   // Backspace
           delay(100);
           Keyboard.release(KEY_BACKSPACE);
@@ -202,7 +181,6 @@ void loop() {
 
       if (results.value == 0xFF30CF) // 4 - Sleep Timer
           {
-         Serial.println("TIMER");         // Debug
          for (int i=0; i<sleepTimerPositionSet; i++)  // Push button 8 times
          {
          if(sleepTimerState == 0)         // Check flip bit state
@@ -228,8 +206,6 @@ void loop() {
 
       if (results.value == 0xFF18E7) // 5 - Kodi Play/Pause
         {
-          Serial.println("5");    // debug
-
           Keyboard.write(' ');    //  Space
                    
           digitalWrite(signalLedPin, HIGH);
@@ -240,8 +216,6 @@ void loop() {
 
       if (results.value == 0xFF7A85) // 6 - Vol Down Kodi
         {
-          Serial.println("6");
-
           Keyboard.write('-');    //  VolDown
           
           digitalWrite(signalLedPin, HIGH);
@@ -252,7 +226,6 @@ void loop() {
 
       if (results.value == 0xFF10EF) // 7 - Brightness UP
         {
-          Serial.println("Brightness UP"); // Debug
 
           // Enter Menu ---------------------------------------------------------------------------
           if(menuState == 0)               // Check flip bit state
@@ -337,7 +310,6 @@ void loop() {
 
       if (results.value == 0xFF38C7) // 8
         {
-         Serial.println("8");
          digitalWrite(signalLedPin, HIGH);
          delay(100);
          digitalWrite(signalLedPin, LOW);;
@@ -346,7 +318,6 @@ void loop() {
 
       if (results.value == 0xFF5AA5) // 9
         {
-         Serial.println("9");
          digitalWrite(signalLedPin, HIGH);
          delay(100);
          digitalWrite(signalLedPin, LOW);
@@ -355,7 +326,6 @@ void loop() {
 
       if (results.value == 0xFF4AB5) // 0
         {
-         Serial.println("0");
          digitalWrite(signalLedPin, HIGH);
          delay(100);
          digitalWrite(signalLedPin, LOW);
@@ -364,8 +334,6 @@ void loop() {
 
       if (results.value == 0xFF42BD) // * - Brighness Down
         {
-          Serial.println("Brightness Down");// Debug
-
           // Enter Menu ---------------------------------------------------------------------------
           if(menuState == 0)               // Check flip bit state
             {
@@ -449,7 +417,6 @@ void loop() {
 
       if (results.value == 0xFF52AD) // #
         {
-         Serial.println("#");
          digitalWrite(signalLedPin, HIGH);
          delay(100);
          digitalWrite(signalLedPin, LOW);
@@ -466,7 +433,6 @@ void loop() {
       avSvichButtonState = digitalRead(avSvichButton); // Physical button to Chandge AV
       if(avSvichButtonState == HIGH)
         {
-         Serial.println("AV");            // Debug
          if(avState == 0)                 // Check flip bit state
           {
             irsend.send(RC5, 0x1838, 13); // AV Signal
