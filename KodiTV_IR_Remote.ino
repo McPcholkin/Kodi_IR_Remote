@@ -2,13 +2,13 @@
 #define USE_DUMP        // disable not used 
 #include <Keyboard.h>   // Pro micro keyboard lib
 
-int signalLedPin = 6;   // Led for testing
-int avSvichButton = 2;  // physical buton to Svich AV
+int signalLedPin = 15;   // Led for testing
+int avSvichButton = 8;  // physical buton to Svich AV
 boolean avSvichButtonState = 0; // Button state
 int speekerPin = 3;     // Speeker
 
-int irRecivePin = 5;    // ir reciever 
-int irLedPin = 4;       // ir led for control TV
+int irRecivePin = 10;    // ir reciever 
+int irLedPin = 9;       // ir led for control TV
 
 boolean tvPowerState = 0;       // Flip Bit default state
 boolean sleepTimerState = 0;    // Flip Bit default state
