@@ -2,6 +2,8 @@
 
 #define USE_DUMP      // disable not used 
 
+#include <Keyboard.h>  // Pro micro keyboard lib
+
 int signalLedPin = 10;   // Led for testing
 int buttonPin = 8;    // button for testing
 int avSvichButton = 12; // physical buton to Svich AV
@@ -42,6 +44,12 @@ void setup() {
   pinMode(signalLedPin, OUTPUT);
   pinMode(buttonPin, INPUT);
   pinMode(speekerPin, INPUT);
+  
+  delay(100);
+  analogWrite(speekerPin, 6);       // Beep at boot
+  delay(105);
+  analogWrite(speekerPin, 0);
+  
 }
 
 void loop() {
@@ -53,47 +61,76 @@ void loop() {
 
       if (results.value == 0xFF629D) // Up - Up Kodi
         {
-         Serial.println("Up");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("Up");        // debug
+
+          Keyboard.press(KEY_UP_ARROW); // Up
+          delay(100);
+          Keyboard.release(KEY_UP_ARROW);
+         
+          digitalWrite(signalLedPin, HIGH);
+          delay(50);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFFA857) // Down - Down Kodi
         {
-         Serial.println("Down");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("Down");     // debug
+
+          Keyboard.press(KEY_DOWN_ARROW); // Down
+          delay(100);
+          Keyboard.release(KEY_DOWN_ARROW);
+
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
 
         }
 
       if (results.value == 0xFF22DD) // Left - Left Kodi
         {
-         Serial.println("Left");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("Left");   // debug
+
+          
+          Keyboard.press(KEY_LEFT_ARROW); // Left
+          delay(100);
+          Keyboard.release(KEY_LEFT_ARROW);
+
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFFC23D) // Right - Right Kodi
         {
-         Serial.println("Right");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("Right");   // debug
+
+
+          Keyboard.press(KEY_RIGHT_ARROW);  // Rihgt
+          delay(100);
+          Keyboard.release(KEY_RIGHT_ARROW);
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
 
       if (results.value == 0xFF02FD) // OK - OK Kodi
         {
-         Serial.println("OK");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);;
+          Serial.println("OK");     // Debug
+  
+          Keyboard.press(KEY_RETURN);   // Enter
+          delay(100);
+          Keyboard.release(KEY_RETURN);
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);;
         }
 
 
@@ -145,19 +182,27 @@ void loop() {
 
       if (results.value == 0xFF9867) // 2 - back Kodi
         {
-         Serial.println("2");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("2");    // debug
+
+          Keyboard.press(KEY_BACKSPACE);   // Backspace
+          delay(100);
+          Keyboard.release(KEY_BACKSPACE);
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
       
       if (results.value == 0xFFB04F) // 3 - Vol UP Kodi
         {
-         Serial.println("3");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("3");    //debug
+
+          Keyboard.write('+');    // VolUP
+
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
@@ -187,21 +232,27 @@ void loop() {
         }
 
 
-      if (results.value == 0xFF18E7) // 5
+      if (results.value == 0xFF18E7) // 5 - Kodi Play/Pause
         {
-         Serial.println("5");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("5");    // debug
+
+          Keyboard.write(' ');    //  Space
+                   
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
       if (results.value == 0xFF7A85) // 6 - Vol Down Kodi
         {
-         Serial.println("6");
-         digitalWrite(signalLedPin, HIGH);
-         delay(100);
-         digitalWrite(signalLedPin, LOW);
+          Serial.println("6");
+
+          Keyboard.write('-');    //  VolDown
+          
+          digitalWrite(signalLedPin, HIGH);
+          delay(100);
+          digitalWrite(signalLedPin, LOW);
         }
 
 
