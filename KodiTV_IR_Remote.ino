@@ -4,30 +4,24 @@
 
 #include <Keyboard.h>  // Pro micro keyboard lib
 
-int signalLedPin = 10;   // Led for testing
-int buttonPin = 8;    // button for testing
-int avSvichButton = 12; // physical buton to Svich AV
+int signalLedPin = 6;   // Led for testing
+//int buttonPin = 8;    // button for testing
+int avSvichButton = 2; // physical buton to Svich AV
 boolean avSvichButtonState = 0; // Button state
-int speekerPin = 9;      // Speeker
+int speekerPin = 3;      // Speeker
 
-int irRecivePin = 11;  // ir reciever 
-int irLedPin = 3;      // ir led for control TV
+int irRecivePin = 5;  // ir reciever 
+int irLedPin = 4;      // ir led for control TV
 
-boolean buttonState = 0; 
+//boolean buttonState = 0; 
 
 boolean tvPowerState = 0;       // Flip Bit default state
-
 boolean sleepTimerState = 0;    // Flip Bit default state
 int sleepTimerPositionSet = 8;  // off - 15 - 30 - 45 - 60 - 90 - 120 - 180 - 240
-
 boolean menuState = 0;    // Flip Bit default state
-
 boolean okState = 0;      // Flip Bit default state
-
 boolean upState = 0;      // Flip Bit default state
-
 boolean downState = 0;    // Flip Bit default state
-
 boolean avState = 0;    // Flip Bit default state
 
 
@@ -38,12 +32,12 @@ IRdecode results;     // decode recieved resolts
 unsigned int Buffer[RAWBUF];
 
 void setup() {
-  Serial.begin(9600);       // print output for debug
+  //Serial.begin(9600);       // print output for debug
   irrecv.enableIRIn();      // Start the receiver
   results.UseExtnBuf(Buffer);
   pinMode(signalLedPin, OUTPUT);
-  pinMode(buttonPin, INPUT);
-  pinMode(speekerPin, INPUT);
+  pinMode(avSvichButton, INPUT);
+  pinMode(speekerPin, OUTPUT);
   
   delay(100);
   analogWrite(speekerPin, 6);       // Beep at boot
@@ -500,6 +494,7 @@ void loop() {
 
 
 //-----------------------------------------------------------------------------
+
 /* button As Power Switch
       buttonState = digitalRead(buttonPin); // Physical button to on TV
       if(buttonState == HIGH)
