@@ -14,17 +14,11 @@ int signalLedPin = 15;   // Led for testing
 int avSvichButton = 8;  // physical buton to Svich AV
 boolean avSvichButtonState = 0; // Button state
 int speekerPin = 3;     // Speeker
+boolean flipBitState = 0; // Flip Bit default state 0x18**  
 
 int irRecivePin = 10;    // ir reciever 
 int irLedPin = 9;       // ir led for control TV
 
-boolean tvPowerState = 0;       // Flip Bit default state
-boolean sleepTimerState = 0;    // Flip Bit default state
-boolean menuState = 0;          // Flip Bit default state
-boolean okState = 0;            // Flip Bit default state
-boolean upState = 0;            // Flip Bit default state
-boolean downState = 0;          // Flip Bit default state
-boolean avState = 0;            // Flip Bit default state
 
 IRrecv irrecv(irRecivePin);     // set reciever to pin
 IRsend irsend;
@@ -119,12 +113,12 @@ void loop() {
 
       if (results.value == 0xFF6897)  // 1 - Power switch
         {
-         if(tvPowerState == 0)            // Check flip bit state
+         if(flipBitState == 0)            // Check flip bit state
           {
             irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
             delay(100);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            tvPowerState = 1;             // Chandge flip bit state
+            flipBitState = 1;             // Chandge flip bit state
             
             // On Sound ------------------
             delay(105);
@@ -142,7 +136,7 @@ void loop() {
             irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
             delay(100);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            tvPowerState = 0;             // Chandge flip bit state
+            flipBitState = 0;             // Chandge flip bit state
 
             // On Sound ------------------
             delay(105);
@@ -187,19 +181,19 @@ void loop() {
       if (results.value == 0xFF30CF) // 4 - Sleep Timer
           {
 
-         if(sleepTimerState == 0)         // Check flip bit state
+         if(flipBitState == 0)         // Check flip bit state
           {
             irsend.send(RC5, 0x82B, 13);  // Sleep Timer Signal
             delay(30);                    // Delay after irsend need to finish transmission, without delay arduino reboot in loop.
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            sleepTimerState = 1;          // Chandge flip bit state
+            flipBitState = 1;          // Chandge flip bit state
           }
         else 
           {
             irsend.send(RC5, 0x2B, 13);   // Sleep Timer Signal
             delay(30);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            sleepTimerState = 0;          // Chandge flip bit state
+            flipBitState = 0;          // Chandge flip bit state
           }
          digitalWrite(signalLedPin, HIGH);
          delay(30);
@@ -229,19 +223,19 @@ void loop() {
 
       if (results.value == 0xFF10EF) // 7 - Menu
         {
-          if(menuState == 0)               // Check flip bit state
+          if(flipBitState == 0)               // Check flip bit state
             {
               irsend.send(RC5, 0x812, 13);  // Menu Signal
               //delay(30);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              menuState = 1;                // Chandge flip bit state
+              flipBitState = 1;                // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x12, 13);   // Menu Signal
               //delay(30);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              menuState = 0;                // Chandge flip bit state
+              flipBitState = 0;                // Chandge flip bit state
             }
 
          digitalWrite(signalLedPin, HIGH);
@@ -262,19 +256,19 @@ void loop() {
 
       if (results.value == 0xFF5AA5) // 9 - TV Up
         {
-          if(upState == 0)                  // Check flip bit state
+          if(flipBitState == 0)                  // Check flip bit state
             {
               irsend.send(RC5, 0x810, 13);  // UP Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              upState = 1;                  // Chandge flip bit state
+              flipBitState = 1;                  // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x10, 13);   // UP Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              upState = 0;                  // Chandge flip bit state
+              flipBitState = 0;                  // Chandge flip bit state
             }
             
           digitalWrite(signalLedPin, HIGH);
@@ -296,19 +290,19 @@ void loop() {
 
       if (results.value == 0xFF42BD) // * - TV OK
         {
-          if(okState == 0)                  // Check flip bit state
+          if(flipBitState == 0)                  // Check flip bit state
             {
               irsend.send(RC5, 0x817, 13);  // OK Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              okState = 1;                  // Chandge flip bit state
+              flipBitState = 1;                  // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x17, 13);   // OK Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              okState = 0;                  // Chandge flip bit state
+              flipBitState = 0;                  // Chandge flip bit state
             }
                     
           digitalWrite(signalLedPin, HIGH);
@@ -319,19 +313,19 @@ void loop() {
 
       if (results.value == 0xFF52AD) // # - TV Down
         {
-          if(downState == 0)                // Check flip bit state
+          if(flipBitState == 0)                // Check flip bit state
             {
               irsend.send(RC5, 0x811, 13);  // Down Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              downState = 1;                // Chandge flip bit state
+              flipBitState = 1;                // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x11, 13);   // Down Signal
               delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-              downState = 0;                // Chandge flip bit state
+              flipBitState = 0;                // Chandge flip bit state
             }
             
           digitalWrite(signalLedPin, HIGH);
@@ -350,12 +344,12 @@ void loop() {
       avSvichButtonState = digitalRead(avSvichButton); // Physical button to Chandge AV
       if(avSvichButtonState == HIGH)
         {
-         if(avState == 0)                 // Check flip bit state
+         if(flipBitState == 0)                 // Check flip bit state
           {
             irsend.send(RC5, 0x1838, 13); // AV Signal
             delay(50);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            avState = 1;                  // Chandge flip bit state
+            flipBitState = 1;                  // Chandge flip bit state
 
           }
         else 
@@ -363,7 +357,7 @@ void loop() {
             irsend.send(RC5, 0x1038, 13); // AV Signal
             delay(50);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            avState = 0;                  // Chandge flip bit state
+            flipBitState = 0;                  // Chandge flip bit state
           }
          digitalWrite(signalLedPin, HIGH);
          delay(100);
@@ -383,19 +377,19 @@ void loop() {
       if(buttonState == HIGH)
         {
          Serial.println("POWER");         // Debug
-         if(tvPowerState == 0)            // Check flip bit state
+         if(flipBitState == 0)            // Check flip bit state
           {
             irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
             delay(300);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            tvPowerState = 1;             // Chandge flip bit state
+            flipBitState = 1;             // Chandge flip bit state
           }
         else 
           {
             irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
             delay(300);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
-            tvPowerState = 0;             // Chandge flip bit state
+            flipBitState = 0;             // Chandge flip bit state
           }
          digitalWrite(signalLedPin, HIGH);
          delay(100);
