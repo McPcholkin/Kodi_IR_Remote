@@ -114,7 +114,7 @@ void loop() {
          if(tvPowerState == 0)            // Check flip bit state
           {
             irsend.send(RC5, 0x180C, 13); // ON/OFF Signal
-            //delay(100);
+            delay(100);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 1;             // Chandge flip bit state
             
@@ -132,7 +132,7 @@ void loop() {
         else 
           {
             irsend.send(RC5, 0x100C, 13); // ON/OFF Signal
-            //delay(100);
+            delay(100);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             tvPowerState = 0;             // Chandge flip bit state
 
@@ -182,14 +182,14 @@ void loop() {
          if(sleepTimerState == 0)         // Check flip bit state
           {
             irsend.send(RC5, 0x82B, 13);  // Sleep Timer Signal
-            //delay(30);
+            delay(30);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             sleepTimerState = 1;          // Chandge flip bit state
           }
         else 
           {
             irsend.send(RC5, 0x2B, 13);   // Sleep Timer Signal
-            //delay(30);
+            delay(30);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             sleepTimerState = 0;          // Chandge flip bit state
           }
@@ -257,14 +257,14 @@ void loop() {
           if(upState == 0)                  // Check flip bit state
             {
               irsend.send(RC5, 0x810, 13);  // UP Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               upState = 1;                  // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x10, 13);   // UP Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               upState = 0;                  // Chandge flip bit state
             }
@@ -291,14 +291,14 @@ void loop() {
           if(okState == 0)                  // Check flip bit state
             {
               irsend.send(RC5, 0x817, 13);  // OK Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               okState = 1;                  // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x17, 13);   // OK Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               okState = 0;                  // Chandge flip bit state
             }
@@ -314,14 +314,14 @@ void loop() {
           if(downState == 0)                // Check flip bit state
             {
               irsend.send(RC5, 0x811, 13);  // Down Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               downState = 1;                // Chandge flip bit state
             }
           else 
             {
               irsend.send(RC5, 0x11, 13);   // Down Signal
-              //delay(50);
+              delay(50);
               irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
               downState = 0;                // Chandge flip bit state
             }
@@ -345,7 +345,7 @@ void loop() {
          if(avState == 0)                 // Check flip bit state
           {
             irsend.send(RC5, 0x1838, 13); // AV Signal
-            //delay(100);
+            delay(50);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             avState = 1;                  // Chandge flip bit state
 
@@ -353,7 +353,7 @@ void loop() {
         else 
           {
             irsend.send(RC5, 0x1038, 13); // AV Signal
-            //delay(100);
+            delay(50);
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             avState = 0;                  // Chandge flip bit state
           }
