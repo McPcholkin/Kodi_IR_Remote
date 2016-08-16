@@ -1,3 +1,11 @@
+/*
+ * Project to control TV and PC (Kodi) from one IR Remote
+ * 
+ * Author McPcholkin
+ * 
+ * 
+ */
+
 #include <IRLib.h>      // include IR libary
 #define USE_DUMP        // disable not used 
 #include <Keyboard.h>   // Pro micro keyboard lib
@@ -182,7 +190,7 @@ void loop() {
          if(sleepTimerState == 0)         // Check flip bit state
           {
             irsend.send(RC5, 0x82B, 13);  // Sleep Timer Signal
-            delay(30);
+            delay(30);                    // Delay after irsend need to finish transmission, without delay arduino reboot in loop.
             irrecv.enableIRIn();          // Enable IR Reciving (after IRsend reciving disable)
             sleepTimerState = 1;          // Chandge flip bit state
           }
